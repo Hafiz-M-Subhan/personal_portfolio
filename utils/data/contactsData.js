@@ -1,7 +1,7 @@
 export const contactsData = {
     email: 'its.hafizsubhan@gmail.com',
     phone: '+923097873547',
-    address: 'Shahdara, Lahore, Pakistan - 54950 ',
+    address: 'Johar Town, Lahore, Pakistan - 54950 ',
     github: 'https://github.com/RanaSubhaan',
     facebook: 'https://www.facebook.com/rana.subuaan/',
     linkedIn: 'https://www.linkedin.com/in/hafiz-muhammad-subhan-shahid-628a66183/',
