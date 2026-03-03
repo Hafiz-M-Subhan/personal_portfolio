@@ -37,8 +37,13 @@ function Skills() {
           direction="left"
         >
           {skillsData.map((skill, id) => (
-            <div className="w-36 min-w-fit h-fit flex flex-col items-center justify-center transition-all duration-500 m-3 sm:m-5 rounded-lg group relative hover:scale-[1.15] cursor-pointer"
-              key={id}>
+            <div 
+              className="w-36 min-w-fit h-fit flex flex-col items-center justify-center transition-all duration-500 m-3 sm:m-5 rounded-lg group relative hover:scale-[1.15] cursor-pointer focus-within:scale-[1.15] focus-within:ring-2 focus-within:ring-violet-500"
+              key={id}
+              tabIndex={0}
+              role="img"
+              aria-label={skill}
+            >
               <div className="h-full w-full rounded-lg border border-[#1f223c] bg-[#11152c] shadow-none shadow-gray-50 group-hover:border-violet-500 transition-all duration-500">
                 <div className="flex -translate-y-[1px] justify-center">
                   <div className="w-3/4">
@@ -46,16 +51,18 @@ function Skills() {
                   </div>
                 </div>
                 <div className="flex flex-col items-center justify-center gap-3 p-6">
-                  <div className="h-8 sm:h-10">
+                  <div className="h-8 sm:h-10 relative">
                     <Image
                       src={skillsImage(skill)?.src}
-                      alt={skill}
+                      alt={`${skill} logo`}
                       width={40}
                       height={40}
+                      unoptimized
                       className="h-full w-auto rounded-lg"
+                      loading="lazy"
                     />
                   </div>
-                  <p className="text-white text-sm sm:text-lg">
+                  <p className="text-white text-sm sm:text-lg font-medium">
                     {skill}
                   </p>
                 </div>
@@ -66,6 +73,6 @@ function Skills() {
       </div>
     </div>
   );
-};
+}
 
 export default Skills;

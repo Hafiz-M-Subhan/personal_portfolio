@@ -4,6 +4,10 @@ import { FaArrowRight } from 'react-icons/fa';
 import BlogCard from './blog-card';
 
 function Blog({ blogs }) {
+  // Handle empty blogs gracefully
+  if (!blogs || blogs.length === 0) {
+    return null;
+  }
 
   return (
     <div id='blogs' className="relative z-50 border-t my-12 lg:my-24 border-[#25213b]">
@@ -40,6 +44,7 @@ function Blog({ blogs }) {
           role="button"
           href="https://dev.to/said7388"
           target='_blank'
+          rel="noopener noreferrer"
         >
           <span>View More</span>
           <FaArrowRight size={16} />
