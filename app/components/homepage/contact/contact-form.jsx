@@ -12,6 +12,7 @@ function ContactForm() {
     email: '',
     message: '',
   });
+  const [isSending, setIsSending] = useState(false);
   const [error, setError] = useState({
     email: false,
     required: false,
@@ -25,21 +26,47 @@ function ContactForm() {
 
   const handleSendMail = async (e) => {
     e.preventDefault();
-    if (!input.email || !input.message || !input.name) {
+    const name = input.name.trim();
+    const email = input.email.trim();
+    const message = input.message.trim();
+
+    if (!email || !message || !name) {
       setError({ ...error, required: true });
       return;
-    } else if (error.email) {
+    }
+
+    if (!isValidEmail(email)) {
+      setError({ ...error, email: true });
       return;
-    } else {
-      setError({ ...error, required: false });
-    };
+    }
+
+    if (isSending) {
+      return;
+    }
+
+    setError({ email: false, required: false });
 
     const serviceID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
     const templateID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-    const options = { publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY };
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceID || !templateID || !publicKey) {
+      toast.error('Contact form is not configured. Please set EmailJS environment variables.');
+      return;
+    }
+
+    const templateParams = {
+      name,
+      email,
+      message,
+      from_name: name,
+      from_email: email,
+      reply_to: email,
+    };
 
     try {
-      const res = await emailjs.send(serviceID, templateID, input, options);
+      setIsSending(true);
+      const res = await emailjs.send(serviceID, templateID, templateParams, { publicKey });
 
       if (res.status === 200) {
         toast.success('Message sent successfully!');
@@ -50,8 +77,10 @@ function ContactForm() {
         });
       };
     } catch (error) {
-      toast.error(error?.text || error);
-    };
+      toast.error(error?.text || 'Failed to send message. Please try again.');
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
@@ -63,7 +92,7 @@ function ContactForm() {
         <p className="text-sm text-[#d3d8e8]">
           {"If you have any questions or concerns, please don't hesitate to contact me. I am open to any work opportunities that align with my skills and interests."}
         </p>
-        <div className="mt-6 flex flex-col gap-4">
+        <form className="mt-6 flex flex-col gap-4" onSubmit={handleSendMail}>
           <div className="flex flex-col gap-2">
             <label className="text-base">Your Name: </label>
             <input
@@ -85,10 +114,14 @@ function ContactForm() {
               maxLength="100"
               required={true}
               value={input.email}
-              onChange={(e) => setInput({ ...input, email: e.target.value })}
-              onBlur={() => {
+              onChange={(e) => {
+                const value = e.target.value;
+                setInput({ ...input, email: value });
+                setError({ ...error, email: value ? !isValidEmail(value) : false });
+              }}
+              onBlur={(e) => {
                 checkRequired();
-                setError({ ...error, email: !isValidEmail(input.email) });
+                setError({ ...error, email: !isValidEmail(e.target.value) });
               }}
             />
             {error.email &&
@@ -116,15 +149,16 @@ function ContactForm() {
               </p>
             }
             <button
+              type="submit"
+              disabled={isSending}
               className="flex items-center gap-1 hover:gap-3 rounded-full bg-gradient-to-r from-pink-500 to-violet-600 px-5 md:px-12 py-2.5 md:py-3 text-center text-xs md:text-sm font-medium uppercase tracking-wider text-white no-underline transition-all duration-200 ease-out hover:text-white hover:no-underline md:font-semibold"
               role="button"
-              onClick={handleSendMail}
             >
-              <span>Send Message</span>
+              <span>{isSending ? 'Sending...' : 'Send Message'}</span>
               <TbMailForward className="mt-1" size={18} />
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

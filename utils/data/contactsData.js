@@ -1,5 +1,5 @@
 export const contactsData = {
-    email: 'its.hafizsubhan@gmail.com',
+    email: 'itx.hafizsubhan@gmail.com',
     phone: '+923097873547',
     address: 'Johar Town, Lahore, Pakistan - 54950 ',
     github: 'https://github.com/RanaSubhaan',
