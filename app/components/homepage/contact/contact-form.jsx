@@ -85,7 +85,13 @@ function ContactForm() {
       const res = await emailjs.send(serviceID, templateID, templateParams, { publicKey });
 
       if (res.status === 200) {
-        toast.success('Message sent successfully! I will get back to you soon.');
+        toast.success(
+          <>
+            Message sent successfully!
+            <br />
+            I will get back to you soon.
+          </>
+        );
         setInput({
           name: '',
           email: '',
